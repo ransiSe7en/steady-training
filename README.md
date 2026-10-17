@@ -65,3 +65,5 @@ Google Calendar links create one repeating event per chosen weekday through the 
 ## Deployment
 
 The source lives in the owner's private GitHub repository. `.openai/hosting.json` identifies its private Sites deployment. Only `dist/` and the deployment manifest are included in the static hosting archive.
+
+The optional local name setting only changes the homepage hello. There are no app accounts, sign-up, passwords, profiles or account-management features. The private web host's owner sign-in is separate from the installed app, which needs no login.

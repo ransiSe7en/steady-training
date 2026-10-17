@@ -1,5 +1,5 @@
 export const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-export const DEFAULTS = {start:'2026-10-19',end:'2027-01-31',days:[1,3,5],time:'18:00',calories:2300,protein:145,carbs:270,fat:71,theme:'dark'};
+export const DEFAULTS = {start:'2026-10-19',end:'2027-01-31',days:[1,3,5],time:'18:00',calories:2300,protein:145,carbs:270,fat:71,theme:'dark',name:''};
 const ex=(id,name,sets,reps,group,cue)=>({id,name,sets,reps,group,cue});
 export const LEGACY_PLAN = [
  {name:'Chest & biceps A',subtitle:'Press, curl, build a base.',exercises:[
@@ -69,6 +69,7 @@ export function validatePlan(plans){
 }
 export const estimatedMinutes=exercises=>Math.round(9+exercises.length*.7+exercises.reduce((n,e)=>n+e.sets*(e.group==='Chest'||e.group==='Back'||e.group.includes('Legs')||e.group==='Glutes'?2.5:1.7),0));
 
+export const normalizeName=value=>typeof value==='string'?Array.from(value.replace(/[\\u0000-\\u001f\\u007f]/g,'').trim().replace(/\\s+/g,' ')).slice(0,40).join(''):'';
 export const iso=(d=new Date())=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 export const dateObj=s=>new Date(`${s}T12:00:00`);
 export const addDays=(s,n)=>{const d=dateObj(s);d.setDate(d.getDate()+n);return iso(d)};
@@ -115,9 +116,10 @@ export function validateBackup(raw){
   clean.workouts[date]=out;
  }
  for(const p of raw.photos){if(typeof p.id!=='string'||p.id.length>100||!validDate(p.date)||!/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(p.src)||p.src.length>12000000)throw Error('Invalid photo.');clean.photos.push({id:p.id,date:p.date,src:p.src,view:['Front','Side','Back'].includes(p.view)?p.view:'Front'})}
- if(raw.plans)clean.plans=validatePlan(raw.plans);
+ clean.settings.name=normalizeName(s.name);if(raw.plans)clean.plans=validatePlan(raw.plans);
  return clean;
 }
+
 
 
 
