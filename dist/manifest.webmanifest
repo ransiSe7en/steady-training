@@ -1,0 +1,25 @@
+{
+  "id": "./",
+  "name": "Steady — Training log",
+  "short_name": "Steady",
+  "description": "Your workouts, nutrition and progress. A little stronger, three days a week.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#131715",
+  "theme_color": "#131715",
+  "icons": [
+    {
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any",
+      "src": "./icon-192.png"
+    },
+    {
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable",
+      "src": "./icon-512.png"
+    }
+  ]
+}
