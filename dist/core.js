@@ -69,7 +69,7 @@ export function validatePlan(plans){
 }
 export const estimatedMinutes=exercises=>Math.round(9+exercises.length*.7+exercises.reduce((n,e)=>n+e.sets*(e.group==='Chest'||e.group==='Back'||e.group.includes('Legs')||e.group==='Glutes'?2.5:1.7),0));
 
-export const normalizeName=value=>typeof value==='string'?Array.from(value.replace(/[\\u0000-\\u001f\\u007f]/g,'').trim().replace(/\\s+/g,' ')).slice(0,40).join(''):'';
+export const normalizeName=value=>typeof value==='string'?Array.from(value.replace(/[\u0000-\u001f\u007f]/g,'').trim().replace(/\s+/g,' ')).slice(0,40).join(''):'';
 export const iso=(d=new Date())=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 export const dateObj=s=>new Date(`${s}T12:00:00`);
 export const addDays=(s,n)=>{const d=dateObj(s);d.setDate(d.getDate()+n);return iso(d)};
@@ -119,6 +119,7 @@ export function validateBackup(raw){
  clean.settings.name=normalizeName(s.name);if(raw.plans)clean.plans=validatePlan(raw.plans);
  return clean;
 }
+
 
 
 
