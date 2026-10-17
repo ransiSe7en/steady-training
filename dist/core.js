@@ -67,7 +67,7 @@ export function validatePlan(plans){
   return {name:PLAN[i].name,subtitle:PLAN[i].subtitle,exercises};
  });
 }
-export const estimatedMinutes=exercises=>Math.round(7+exercises.reduce((n,e)=>n+e.sets*(e.group==='Chest'||e.group==='Back'||e.group.includes('Legs')||e.group==='Glutes'?2.5:1.7),0));
+export const estimatedMinutes=exercises=>Math.round(9+exercises.length*.7+exercises.reduce((n,e)=>n+e.sets*(e.group==='Chest'||e.group==='Back'||e.group.includes('Legs')||e.group==='Glutes'?2.5:1.7),0));
 
 export const iso=(d=new Date())=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 export const dateObj=s=>new Date(`${s}T12:00:00`);
@@ -118,6 +118,7 @@ export function validateBackup(raw){
  if(raw.plans)clean.plans=validatePlan(raw.plans);
  return clean;
 }
+
 
 
 
