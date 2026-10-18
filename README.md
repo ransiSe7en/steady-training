@@ -46,7 +46,7 @@ gradle assembleDebug
 3. Today's steps refresh when opening/returning to the app; select a recent log date to query that date. Health Connect reads are limited to recent days without requesting extended-history access.
 4. No-record, permission-denied and read-failure states are distinct from a genuine zero. Previously saved totals are labelled with their source and last-sync time.
 
-The app reads `StepsRecord.COUNT_TOTAL` through the aggregate API filtered to Samsung Health (`com.sec.android.app.shealth`). It does not add Samsung counts to raw phone/watch totals. Only READ_STEPS is requested: no health writes, location, heart rate, sleep or background-health permission. Data can lag until Samsung Health shares it. Actual Samsung permission and sync behavior must be verified on the user's phone.
+The app reads `StepsRecord.COUNT_TOTAL` through the aggregate API filtered to Samsung Health (`com.sec.android.app.shealth`). It does not add Samsung counts to raw phone/watch totals. Step sync requests READ_STEPS. Optional MyFitnessPal import separately requests READ_NUTRITION. No health writes, location, heart rate, sleep or background-health permission is requested. Rest alerts request notification and precise-alarm access. Data can lag until Samsung Health shares it. Actual Samsung permission and sync behavior must be verified on the user's phone.
 
 The native bridge only exists in bundled local pages. External links open in the user's browser; non-asset WebView network requests are blocked. Android file picker handles photo/backup selection, and Android's Save dialog handles JSON/ICS export. App automatic Android backup is disabled. No backend receives health records.
 
@@ -60,10 +60,15 @@ Google Calendar links create one repeating event per chosen weekday through the 
 
 ## Verification
 
-12 core checks cover phase boundaries, missed days/drafts, previous performance, time-spaced charts, 45-minute calendar durations/midnight boundaries, nutrition/photo/workout backup round trips, malformed backups, legacy workout preservation, plan customization, default session time budgets and steps metadata restoration. Phone-sized browser QA covers nutrition logging, a full session, reload persistence, measurements, light/dark modes, plan editing and step entry. Native APK compilation and physical-device Health Connect verification are separate checks; a successful build does not prove Samsung has shared steps.
+14 core checks cover phase boundaries, missed days/drafts, previous performance, time-spaced charts, 45-minute calendar durations/midnight boundaries, nutrition/photo/workout backup round trips, malformed backups, legacy workout preservation, plan customization, default session time budgets and steps metadata restoration. Phone-sized browser QA covers nutrition logging, a full session, reload persistence, measurements, light/dark modes, plan editing and step entry. Native APK compilation and physical-device Health Connect verification are separate checks; a successful build does not prove Samsung has shared steps.
 
 ## Deployment
 
 The source lives in the owner's private GitHub repository. `.openai/hosting.json` identifies its private Sites deployment. Only `dist/` and the deployment manifest are included in the static hosting archive.
 
 The optional local name setting only changes the homepage hello. There are no app accounts, sign-up, passwords, profiles or account-management features. The private web host's owner sign-in is separate from the installed app, which needs no login.
+
+
+Version 1.3 adds an insertion + below every exercise and an Add set action that duplicates the latest kg/reps into a new unchecked, editable set. There is no set-count limit in workout logging or backup restoration. These changes affect the current workout only. Native rest alerts use Android notification sound (subject to notification permission, channel settings, volume and Do Not Disturb). Allow precise alarms for timely alerts with the screen off; otherwise Android can delay background delivery. Stopping or restarting a timer cancels the preceding alert.
+
+MyFitnessPal import reads only that app's NutritionRecords from Health Connect, prefills available calories/protein/carbs/fat for the selected day, and requires review/save. Missing values remain manual; no-data and permission failures do not overwrite the saved day. MyFitnessPal must be linked to Health Connect and have synced its meals. Step queries cover the complete local calendar day and explain whether Samsung records are absent or Health Connect contains steps from another source. Physical-phone sharing and notification delivery remain device checks.
