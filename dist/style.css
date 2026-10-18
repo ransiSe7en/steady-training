@@ -41,3 +41,20 @@ body.home-page .app-shell{padding-top:22px}
 .home-heading h1{min-width:0;overflow:hidden;text-overflow:ellipsis}
 .home-date-actions{flex-shrink:0}
 .home-progress{margin-top:24px}
+/* Tappable summary cards and safe breathing room. */
+body.home-page .app-shell{padding-top:32px}
+.daily-summary{grid-template-columns:.9fr 1.1fr}
+.daily-summary .card{position:relative;cursor:pointer}
+.daily-summary .card:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.daily-summary h3{padding-right:22px}
+.card-corner{position:absolute;top:5px;right:5px;display:grid;place-items:center;width:32px;height:32px;padding:0;border:0;border-radius:8px;background:transparent;color:var(--accent);font-size:14px;line-height:1}
+.calorie-summary{grid-template-columns:minmax(0,1fr) minmax(0,.7fr);gap:0 10px}
+.calorie-guide{width:max-content;max-width:100%;margin-top:10px}
+.calorie-guide small{display:block;white-space:nowrap}
+.calorie-guide .progress-track{width:100%;margin:7px 0}
+.calorie-summary .summary-macros{padding-left:12px}
+.steps-source{font-size:9px}
+#modal-content>.narrow>.card{padding:12px 0 0;border:0;box-shadow:none;background:none}
+#modal-content h2{margin-bottom:14px}
+#modal-content .card-head{display:none}
+@media(max-width:380px){.calorie-summary{gap:0 7px}.calorie-summary .summary-macros{padding-left:7px}.calorie-guide small{font-size:9px}}

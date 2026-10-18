@@ -110,7 +110,7 @@ class MainActivity : ComponentActivity() {
         setContentView(web)
         ViewCompat.setOnApplyWindowInsetsListener(web) { view, insets ->
             val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.ime())
-            view.setPadding(bars.left, bars.top, bars.right, bars.bottom)
+            val params = view.layoutParams as android.view.ViewGroup.MarginLayoutParams; params.setMargins(bars.left, bars.top, bars.right, bars.bottom); view.layoutParams = params
             insets
         }
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
@@ -224,5 +224,6 @@ class PrivacyActivity : Activity() {
         setContentView(ScrollView(this).apply { addView(text) })
     }
 }
+
 
 
