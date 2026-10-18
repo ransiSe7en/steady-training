@@ -6,3 +6,38 @@
 @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 .plan-exercise{border-bottom:1px solid var(--line);padding:18px 0}.plan-exercise:first-child{padding-top:0}.plan-numbers{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}.plan-actions{display:flex;gap:20px}.plan-actions .text-button{font-size:11px}summary{min-height:35px;display:list-item}#steps-card .form-actions{flex-wrap:wrap}
 .insert-exercise{margin:-4px 0 18px;min-height:38px;border-style:dashed;background:transparent;color:var(--accent)}.insert-exercise svg{width:19px;height:19px}
+/* Compact homepage summary approved in the preview. */
+body.home-page header{display:none}
+body.home-page .app-shell{padding-top:22px}
+.home-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:16px}
+.home-heading h1{font-size:21px;letter-spacing:-.6px;margin:0;white-space:nowrap}
+.home-date-actions{display:flex;align-items:center;gap:10px}
+.home-date{position:relative;font-size:10px;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);text-align:right}
+.home-date input{position:absolute;inset:0;width:100%;opacity:0;cursor:pointer}
+#today-theme .icon-button{min-width:36px;min-height:36px}
+#today-theme svg{width:18px;height:18px}
+.daily-summary{display:grid;grid-template-columns:.75fr 1.25fr;gap:10px;margin-bottom:16px;align-items:stretch}
+.daily-summary .card{padding:12px 11px;box-shadow:none;min-width:0}
+.daily-summary h3{font-size:12px;color:var(--muted);font-weight:500}
+.daily-summary .metric-number{font-size:28px;margin:7px 0 2px;letter-spacing:-1px}
+.daily-summary small{font-size:10px}
+.daily-summary .text-button{font-size:11px;padding:0;min-height:28px;margin-top:4px;text-decoration:none}
+.steps-source{font-size:10px;line-height:1.35;color:var(--muted);margin:6px 0 0}
+.calorie-summary{display:grid;grid-template-columns:1.2fr .8fr;gap:0 13px;align-content:start}
+.calorie-summary h3{grid-column:1 / 3}
+.calorie-total{grid-column:1;grid-row:2}
+.calorie-total .progress-track{height:4px;margin:7px 0}
+.calorie-summary .summary-macros{grid-column:2;grid-row:2;margin-top:8px;border-left:1px solid var(--line);padding-left:10px;display:grid;gap:3px;line-height:1.3}
+.summary-macros b{display:block;font-size:10px;font-weight:600}
+.summary-macros small{display:block}
+.calorie-summary>.text-button{grid-column:1 / 3;align-self:end}
+.steps-options summary{font-size:10px;color:var(--muted);min-height:0;cursor:pointer;margin-top:3px}
+.steps-options[open]{margin-top:8px}
+.steps-options .secondary{padding:8px;min-height:40px;font-size:11px}
+.steps-options input{min-width:0}
+.home-progress{grid-template-columns:1fr}
+@media(min-width:800px){.daily-summary{max-width:600px}.home-heading h1{font-size:28px}.daily-summary .card{padding:18px}.daily-summary .metric-number{font-size:34px}}
+@media(max-width:380px){.home-heading h1{font-size:17px}.home-date-actions{gap:6px}.home-date{font-size:9px;letter-spacing:0}.calorie-summary{gap:0 8px}.daily-summary .metric-number{font-size:25px}}
+.home-heading h1{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.home-date-actions{flex-shrink:0}
+.home-progress{margin-top:24px}
