@@ -57,10 +57,10 @@ export const EXERCISES = [...new Map([...PLAN,...LEGACY_PLAN].flatMap(p=>p.exerc
 export function validatePlan(plans){
  if(!Array.isArray(plans)||plans.length!==3)throw Error('A plan needs three sessions.');
  return plans.map((p,i)=>{
-  if(!p||!Array.isArray(p.exercises)||p.exercises.length<1||p.exercises.length>10)throw Error('Each session needs 1–10 exercises.');
+  if(!p||!Array.isArray(p.exercises)||p.exercises.length<1)throw Error('Each session needs at least one exercise.');
   const ids=new Set();
   const exercises=p.exercises.map(e=>{
-   if(!e||typeof e.id!=='string'||!EXERCISES.some(x=>x.id===e.id)||ids.has(e.id)||!Number.isInteger(e.sets)||e.sets<1||e.sets>5||!/^\d{1,2}[–-]\d{1,2}$/.test(e.reps))throw Error('Invalid or duplicate exercise.');
+   if(!e||typeof e.id!=='string'||!EXERCISES.some(x=>x.id===e.id)||ids.has(e.id)||!Number.isInteger(e.sets)||e.sets<1||!/^\d{1,2}[–-]\d{1,2}$/.test(e.reps))throw Error('Invalid or duplicate exercise.');
    const [lo,hi]=e.reps.split(/[–-]/).map(Number);if(lo<1||hi<lo||hi>50)throw Error('Rep ranges must be between 1 and 50.');
    ids.add(e.id);const base=EXERCISES.find(x=>x.id===e.id);return {...base,cue:typeof e.cue==='string'?e.cue.slice(0,1000):base.cue,sets:e.sets,reps:lo+'–'+hi};
   });
@@ -105,14 +105,14 @@ export function validateBackup(raw){
  for(const [date,log] of Object.entries(raw.logs)){
   if(!validDate(date)||!log||typeof log!=='object')throw Error('Invalid daily entry.');
   const out={};for(const k of ['calories','protein','carbs','fat','weight','waist','steps'])if(log[k]!==undefined&&log[k]!==null){if(!number(log[k],0,100000))throw Error('Invalid daily value.');out[k]=log[k]}
-  if(log.steps!==undefined&&(!Number.isInteger(log.steps)||log.steps<0))throw Error('Invalid steps.');if(typeof log.stepsSource==='string')out.stepsSource=log.stepsSource.slice(0,100);if(typeof log.stepsSyncedAt==='string')out.stepsSyncedAt=log.stepsSyncedAt.slice(0,40);if(log.nutritionSaved===true){if(['calories','protein','carbs','fat'].some(k=>out[k]===undefined))throw Error('Missing nutrition totals.');out.nutritionSaved=true;}clean.logs[date]=out;
+  if(log.steps!==undefined&&(!Number.isInteger(log.steps)||log.steps<0))throw Error('Invalid steps.');if(typeof log.stepsSource==='string')out.stepsSource=log.stepsSource.slice(0,100);if(typeof log.stepsSyncedAt==='string')out.stepsSyncedAt=log.stepsSyncedAt.slice(0,40);if(typeof log.nutritionSource==='string')out.nutritionSource=log.nutritionSource.slice(0,100);if(log.nutritionSaved===true){if(['calories','protein','carbs','fat'].some(k=>out[k]===undefined))throw Error('Missing nutrition totals.');out.nutritionSaved=true;}clean.logs[date]=out;
  }
  for(const [date,w] of Object.entries(raw.workouts)){
   if(!validDate(date)||w.date!==date||!Number.isInteger(w.session)||w.session<0||w.session>2||typeof w.exercises!=='object')throw Error('Invalid workout.');
   const original=w.plan?validatePlan([0,1,2].map(i=>({exercises:i===w.session?w.plan:PLAN[i].exercises})))[w.session].exercises:LEGACY_PLAN[w.session].exercises;
   const out={date,session:w.session,completed:w.completed===true,exercises:{}};
   if(w.plan){out.plan=original;out.name=typeof w.name==='string'?w.name.slice(0,100):PLAN[w.session].name;}if(w.neckDone===true)out.neckDone=true;
-  for(const e of original){const rows=w.exercises[e.id];if(!Array.isArray(rows)||rows.length>10)throw Error('Invalid workout sets.');out.exercises[e.id]=rows.map(r=>{if(!((r.kg===''||number(r.kg,0,2000))&&(r.reps===''||Number.isInteger(r.reps)&&number(r.reps,1,100))&&typeof r.done==='boolean') )throw Error('Invalid set.');if(r.done&&(r.kg===''||r.reps===''))throw Error('Completed set has no values.');return {kg:r.kg,reps:r.reps,done:r.done}})}
+  for(const e of original){const rows=w.exercises[e.id];if(!Array.isArray(rows))throw Error('Invalid workout sets.');out.exercises[e.id]=rows.map(r=>{if(!((r.kg===''||number(r.kg,0,2000))&&(r.reps===''||Number.isInteger(r.reps)&&number(r.reps,1,100))&&typeof r.done==='boolean') )throw Error('Invalid set.');if(r.done&&(r.kg===''||r.reps===''))throw Error('Completed set has no values.');return {kg:r.kg,reps:r.reps,done:r.done}})}
   clean.workouts[date]=out;
  }
  for(const p of raw.photos){if(typeof p.id!=='string'||p.id.length>100||!validDate(p.date)||!/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(p.src)||p.src.length>12000000)throw Error('Invalid photo.');clean.photos.push({id:p.id,date:p.date,src:p.src,view:['Front','Side','Back'].includes(p.view)?p.view:'Front'})}
@@ -124,4 +124,14 @@ export function validateBackup(raw){
 
 
 
+
+export function duplicateSet(workout,id){
+ const rows=workout.exercises[id];if(!Array.isArray(rows))throw Error('Exercise not found.');
+ const last=rows.at(-1)||{kg:'',reps:''};rows.push({kg:last.kg,reps:last.reps,done:false});
+ const e=workout.plan.find(e=>e.id===id);if(e)e.sets=rows.length;workout.completed=false;return rows.at(-1);
+}
+export function insertWorkoutExercise(workout,id,after){
+ const base=EXERCISES.find(e=>e.id===id);if(!base||workout.exercises[id])throw Error('Choose an exercise not already in this session.');
+ const exercise={...base,sets:2};workout.plan.splice(after+1,0,exercise);workout.exercises[id]=Array.from({length:2},()=>({kg:'',reps:'',done:false}));workout.completed=false;return exercise;
+}
 

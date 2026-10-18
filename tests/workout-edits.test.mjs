@@ -1,0 +1,6 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {PLAN,DEFAULTS,duplicateSet,insertWorkoutExercise,validateBackup} from '../dist/core.js';
+function workout(){const p=structuredClone(PLAN[0]);return {date:'2026-10-19',session:0,name:p.name,plan:p.exercises,completed:false,exercises:Object.fromEntries(p.exercises.map(e=>[e.id,[{kg:20,reps:10,done:true}]]))}}
+test('duplicate latest set repeatedly, editable and unchecked, beyond ten sets',()=>{const w=workout();for(let i=0;i<12;i++)duplicateSet(w,'press');assert.equal(w.exercises.press.length,13);assert.deepEqual(w.exercises.press.at(-1),{kg:20,reps:10,done:false});w.exercises.press.at(-1).kg=22;assert.equal(w.exercises.press.at(-2).kg,20);const raw={version:1,settings:{...DEFAULTS},logs:{},workouts:{[w.date]:w},photos:[]};assert.equal(validateBackup(raw).workouts[w.date].exercises.press.length,13)});
+test('inserting an exercise preserves order and existing logged sets',()=>{const w=workout();insertWorkoutExercise(w,'fly',0);assert.deepEqual(w.plan.slice(0,3).map(e=>e.id),['press','fly','row']);assert.deepEqual(w.exercises.press,[{kg:20,reps:10,done:true}]);assert.ok(w.exercises.fly.every(r=>!r.done));assert.throws(()=>insertWorkoutExercise(w,'press',1))});
